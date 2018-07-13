@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
+import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,5 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ParticleCloudSDK.init(this);
+        ParticleDeviceSetupLibrary.init(this.getApplicationContext());
     }
 }
