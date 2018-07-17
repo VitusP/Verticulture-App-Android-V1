@@ -9,6 +9,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+
 import java.util.*;
 import java.io.IOException;
 
@@ -20,13 +24,15 @@ import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 import io.particle.android.sdk.utils.Async;
 import io.particle.android.sdk.utils.ui.Toaster;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //initialize Cloud and Setup SDK
         ParticleCloudSDK.init(this);
         ParticleDeviceSetupLibrary.init(this.getApplicationContext());
 
@@ -56,32 +62,32 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     Async.executeAsync(ParticleCloudSDK.getCloud(), new Async.ApiProcedure<ParticleCloud>() {
-                                @Override
-                                public Void callApi(ParticleCloud particleCloud)
-                                        throws ParticleCloudException, IOException {
-                                    List<ParticleDevice> devices = particleCloud.getDevices();
-                                    for(ParticleDevice device:devices){
-                                        System.out.println(device.getName());
-                                    }
-                                    for (ParticleDevice particleDevice : devices) {
-                                        if ("Photon_Verticulture_1".equals(particleDevice.getName())) {
-                                            try {
-                                                //4
-                                                int resultCode = particleDevice.callFunction("Pump_State", Arrays.asList("ON"));
-                                                System.out.println("Calling function");
+                        @Override
+                        public Void callApi(ParticleCloud particleCloud) throws ParticleCloudException, IOException {
+                            List<ParticleDevice> devices = particleCloud.getDevices();
+                            for(ParticleDevice device:devices){
+                                System.out.println(device.getName());
+                            }
+                            for (ParticleDevice particleDevice : devices) {
+                                if ("Photon_Verticulture_1".equals(particleDevice.getName())) {
+                                    try {
+                                        //4
+                                            int resultCode = particleDevice.callFunction("Pump_State", Arrays.asList("ON"));
+                                             System.out.println("Calling function");
                                                 //5
-                                                if (resultCode == 1) {
-                                                    //Toast.makeText(MainActivity.this, "Called a function on myDevice", Toast.LENGTH_SHORT).show();
-                                                    System.out.println("Succeed");
-                                                }
-                                            } catch (ParticleDevice.FunctionDoesNotExistException e) {
-                                                e.printStackTrace();
-                                                System.out.println("Failure");
+                                            if (resultCode == 1) {
+                                            //Toast.makeText(MainActivity.this, "Called a function on myDevice", Toast.LENGTH_SHORT).show();
+                                                System.out.println("Succeed");
                                             }
                                         }
-                                    }
-                                    return null;
+                                        catch (ParticleDevice.FunctionDoesNotExistException e) {
+                                            e.printStackTrace();
+                                            System.out.println("Failure");
+                                        }
                                 }
+                            }
+                                    return null;
+                        }
 
                                 @Override
                                 public void onFailure(ParticleCloudException exception) {
@@ -113,5 +119,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.execute();
     }
+
+
 
 }
